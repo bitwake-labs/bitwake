@@ -40,7 +40,7 @@ export default function Index() {
     //     alarmSound.release();
     //   });
     // });
-    const { sound } = await Audio.Sound.createAsync(require('../assets/audio/meme.mp3'));
+    const { sound } = await Audio.Sound.createAsync(require('../assets/audio/meme.mp3'), { shouldPlay: true });
     setSound(sound);
     console.log('Playing Sound');
     await sound.playAsync();
@@ -50,10 +50,7 @@ export default function Index() {
     // Código anterior omitido para maior clareza
 
     // Verifica se o alarme está configurado para um horário futuro
-    console.log(selectedDate > new Date())
-    if (selectedDate > new Date()) {
-      playAlarm();
-    }
+    playAlarm();
   };
 
   const showMode = (currentMode) => {
