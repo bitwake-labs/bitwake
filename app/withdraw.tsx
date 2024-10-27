@@ -1,16 +1,29 @@
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, TextInput, Alert, FlatList } from "react-native";
 import React, { useState } from 'react';
-import ColorList from '@/components/ColorList';
 
 export default function Withdraw() {
-  // Definindo um estado para o saldo
-  const [saldo, setSaldo] = useState(1500.00); // Exemplo de saldo inicial
+  const [saldo, setSaldo] = useState(1500.00); // Saldo inicial
+  const [saque, setSaque] = useState(''); // Valor do saque digitado
+  const [historico, setHistorico] = useState<number[]>([]); // Histórico de transações
 
   // Função para lidar com o saque
   const handleSaque = () => {
-    if (saldo > 0) {
-      setSaldo(saldo - 100); // Exemplo: subtraindo R$100 do saldo ao clicar
+    const valorSaque = parseFloat(saque); // Converte o valor do saque para número
+
+    if (isNaN(valorSaque) || valorSaque <= 0) {
+      Alert.alert('Valor inválido', 'Por favor, insira um valor válido para o saque.');
+      return;
     }
+
+    if (valorSaque > saldo) {
+      Alert.alert('Saldo insuficiente', 'Você não tem saldo suficiente para realizar este saque.');
+      return;
+    }
+
+    // Atualiza o saldo e adiciona o saque ao histórico
+    setSaldo(saldo - valorSaque);
+    setHistorico([...historico, valorSaque]); // Adiciona o valor ao histórico
+    setSaque(''); // Limpa o campo de entrada
   };
 
   return (
@@ -18,13 +31,31 @@ export default function Withdraw() {
       <Text style={styles.saldoText}>Saldo disponível</Text>
       <Text style={styles.saldoValue}>R$ {saldo.toFixed(2)}</Text>
       
-      {/* O botão laranja de sacar */}
+      {/* Campo de entrada para o valor do saque */}
+      <TextInput
+        style={styles.input}
+        placeholder="Digite o valor do saque"
+        keyboardType="numeric"
+        value={saque}
+        onChangeText={(text) => setSaque(text)}
+      />
+
+      {/* Botão de saque */}
       <TouchableOpacity style={styles.saqueButton} onPress={handleSaque}>
         <Text style={styles.saqueButtonText}>Sacar</Text>
       </TouchableOpacity>
       
-      {/* O restante da tela */}
-      <ColorList color="green" />
+      {/* Lista de histórico de saques */}
+      <FlatList
+        data={historico}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <View style={[styles.card, { backgroundColor: 'green' }]}>
+            <Text style={styles.cardText}>Saque: R$ {item.toFixed(2)}</Text>
+          </View>
+        )}
+        style={styles.historyContainer}
+      />
     </View>
   );
 }
@@ -46,6 +77,15 @@ const styles = StyleSheet.create({
     color: 'green',
     marginBottom: 20,
   },
+  input: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    fontSize: 18,
+    marginBottom: 20,
+  },
   saqueButton: {
     backgroundColor: 'orange',
     paddingVertical: 15,
@@ -58,5 +98,18 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  historyContainer: {
+    marginTop: 20,
+  },
+  card: {
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  cardText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
