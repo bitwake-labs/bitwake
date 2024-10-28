@@ -8,16 +8,12 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Audio, InterruptionModeIOS, InterruptionModeAndroid } from 'expo-av';
-// import Sound from 'react-native-sound';
 
 export default function Index() {
   const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState('time');
-  const [show, setShow] = useState(false);
-  const [sound, setSound] = useState();
 
   const playAlarm = async () => {
-    audio_path = require('../assets/audio/meme.mp3');
+    const audio_path = require('../assets/audio/meme.mp3');
     Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
       interruptionModeIOS: InterruptionModeIOS.DoNotMix,
@@ -30,34 +26,65 @@ export default function Index() {
     await sound.playAsync();
   };
 
-  const onChange = (event, selectedDate) => {
-    playAlarm();
-  };
-
-  const showMode = (currentMode) => {
-    setShow(!show);
-    setMode(currentMode);
-  };
-
-  const showTimepicker = () => {
-    showMode('time');
-  };
-
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={showTimepicker} style={styles.button}>
-        <Text style={styles.buttonText}>Definir alarme</Text>
-      </TouchableOpacity>
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          display="default"
-          onChange={onChange}
-        />
-      )}
+    <View style={{flex: 1, justifyContent:'center', alignItems:'center'}}>
+      <View style={{flexDirection:'column', alignItems:'center', backgroundColor:'#e5e6e5', height:600, width:300, borderRadius:10}}>
+        <View style={{alignItems:'center', margin:20}}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+            Selecione o horário do despertador
+          </Text>
+        </View>
+        <View style={{alignItems:'center'}}>
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode="time"
+            is24Hour={true}
+            display="calendar"
+            onChange={playAlarm}
+          />
+        </View>
+        <View style={{display: 'flex', margin: 30, flexDirection: 'row', gap:15, flexWrap: 'wrap'}}>
+          <View style={styles.button}>
+            <TouchableOpacity>
+              <Text style={styles.buttonText}>Dom</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.button}>
+            <TouchableOpacity>
+              <Text style={styles.buttonText}>Seg</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.button}>
+            <TouchableOpacity>
+              <Text style={styles.buttonText}>Ter</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.button}>
+            <TouchableOpacity>
+              <Text style={styles.buttonText}>Qua</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.button}>
+            <TouchableOpacity>
+              <Text style={styles.buttonText}>Qui</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.button}>
+            <TouchableOpacity>
+              <Text style={styles.buttonText}>Sex</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.button}>
+            <TouchableOpacity>
+              <Text style={styles.buttonText}>Sáb</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View>
+
+        </View>
+      </View>
     </View>
   );
 }
@@ -66,15 +93,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
   },
   button: {
-    backgroundColor: 'green',
+    backgroundColor: 'white',
     padding: 10,
     borderRadius: 5,
   },
   buttonText: {
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
   },
   });
